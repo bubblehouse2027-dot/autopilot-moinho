@@ -1,0 +1,31 @@
+# ============================================================
+#  Client: Moinho Digital — Instagram + Facebook only
+#  Secrets (tokens) never go here -> GitHub Secrets
+# ============================================================
+
+client:
+  name: "Moinho Digital"
+  website: "https://moinhodigital.pt"
+  sector: "default"
+  language: "pt-PT"
+  tone: "profissional, próximo, claro"
+  colors:                         # only used by optional modules; fill in later
+    primary: "#0E5A5C"
+    accent: "#F2C230"
+    background: "#F3F6F5"
+  instagram_handle: "moinhodigital"   # without @
+  whatsapp: "+351935882892"
+
+modules:
+  publish_meta: true       # Instagram + Facebook from content/calendar.csv
+  monthly_report: false    # switch on later if you want your own stats by e-mail
+  google_posts: false
+  review_replies: false
+  review_to_post: false
+  holiday_hours: false
+  search_console: false
+  link_page: false
+
+settings:
+  # Public URL where GitHub serves this repo's files (repo must be PUBLIC for raw URLs)
+  media_base_url: "https://raw.githubusercontent.com/REPLACE_GITHUB_USER/autopilot-moinho/main/"
