@@ -11,6 +11,7 @@ calendar.csv columns:
   type = image | reel | carousel (carousel: media = a.jpg|b.jpg|c.jpg)
   cover = optional cover JPG for reels (e.g. posts/01_capa.jpg)
 """
+import json
 import csv
 import time
 from datetime import datetime, timedelta
@@ -71,6 +72,20 @@ def post_facebook(row):
     if row["type"] == "reel":
         r = requests.post(f"{GRAPH}/{page}/videos", data={"file_url": media_url(first),
                           "description": row["caption"], "access_token": tok}, timeout=120)
+    elif row["type"] == "carousel":
+        # Facebook has no carousel type: upload each photo unpublished,
+        # then publish one feed post with all of them attached (multi-photo post).
+        ids = []
+        for f in [x for x in row["media"].split("|") if x.strip()]:
+            p = requests.post(f"{GRAPH}/{page}/photos", data={"url": media_url(f),
+                              "published": "false", "access_token": tok}, timeout=60).json()
+            if "id" not in p:
+                raise RuntimeError(p)
+            ids.append(p["id"])
+        data = {"message": row["caption"], "access_token": tok}
+        for i, pid in enumerate(ids):
+            data[f"attached_media[{i}]"] = json.dumps({"media_fbid": pid})
+        r = requests.post(f"{GRAPH}/{page}/feed", data=data, timeout=60)
     else:
         r = requests.post(f"{GRAPH}/{page}/photos", data={"url": media_url(first),
                           "message": row["caption"], "access_token": tok}, timeout=60)
